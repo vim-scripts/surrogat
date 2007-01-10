@@ -1,0 +1,4 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1761
+
+This plugin converts Unicode characters to their ASCII representations (HTML, LaTeX, any) and vice versa. Data driven, highly configurable. Another location is http://wagner.pp.ru/~slobin/vim/surrogat.zip
+ 

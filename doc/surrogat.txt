@@ -1,0 +1,130 @@
+*surrogat.txt*  Surrogate alphabets handling
+
+For Vim version 7.0.  Last change: 2006 Sep 25
+
+$Id: surrogat.txt 1.6 2006/09/25 18:57:08 slobin Exp $
+
+==============================================================================
+1. Contents                                 *surrogates* *surrogates-contents*
+   1. Contents                                      |surrogates-contents|
+   2. Introduction                                  |surrogates-introduction|
+   3. Usage                                         |surrogates-usage|
+   4. Files                                         |surrogates-files|
+   5. Known Bugs                                    |surrogates-known-bugs|
+   6. License                                       |surrogates-license|
+
+==============================================================================
+2. Introduction                                      *surrogates-introduction*
+
+It is often useful to have pure ASCII external representation for non-ASCII
+characters. Examples include TeX/LaTeX encoding, HTML/XML entities, or even
+traditional Esperanto 'x' transliteration: >
+
+    Internal    External          Encoding
+    --------    --------          --------
+    Español     Espa\~{n}ol       TeX/LaTeX
+    Français    Fran&ccedil;ais   HTML/XML   
+    Ĉirkaŭ      Cxirkaux          Esperanto
+
+Such representations are called surrogate alphabets, or just surrogates. This
+plugin allows you to decode and encode texts in surrogate alphabets.
+
+==============================================================================
+3. Usage                                                    *surrogates-usage*
+
+If your Vim is running in GUI mode, this plugin installs 'Surrogates' menu
+into your menu bar. Menu contents 'Encode' and 'Decode' commands, and list of
+available surrogate names. You should select desired surrogate from the list
+and then click on 'Encode' or 'Decode' command. 'Encode' will convert buffer
+from internal (usually Unicode) encoding to external (usually ASCII) one, and
+'Decode' will turn it back. Note that not all surrogates are reversible.
+
+You can also use surrogates from command line. Three |ex| mode commands are
+provided. First one is ":SurrogateSetCurrent". It requires one argument and
+sets surrogate name for further usage. If you don't remember names of
+surrogates available, try <Tab> for autocompletion. The two others are
+":SurrogateEncode" and ":SurrogateDecode", they encodes and decodes text in
+the current buffer respectively. This commands doesn't accept any arguments,
+but range may be specified just in case if you want to transform only some
+part of buffer.
+
+==============================================================================
+4. Files                                                    *surrogates-files*
+
+This plugin understands two different formats for surrogates definition. One
+is compatible with "UniRed" text editor by Jurij Finkel, other is compatible
+with "catdoc" utility by Victor Wagner.
+ 
+First format files (UniRed compatible) should have extension ".srg". They
+consist of lines like this one: >
+
+    \~{n}   &#241;
+
+First column is external (ASCII) representation, second is internal (Unicode)
+character in form of HTML/XML entity. Decimal representation is used. In fact
+this format is not restricted to exactly one character in right column - any
+string may be used there. More than, entity notation allowed in both columns.
+During translation substitutions specified earlier in file take precedence
+over substitutions specified later. This feature allows some neat tricks, see
+files x.srg and/or zam.srg for inspiration. Lines beginning with ";" character
+are treated as comments.
+
+Second format files (catdoc compatible) should have extension ".rpl" or
+".spc". They consist of lines like this one: >
+
+    F1  "\\~{n}"
+
+First column is internal (Unicode) character code, second is external (ASCII)
+representation. Internal code is specified in hexadecimal, with two or four
+digits. Unlike the first format, exactly one character is allowed here. Second
+column contains character string, enclosed in "quotes", 'apostrophes',
+(parenthesizes), [brackets], {braces} or even left bare (no spaces allowed in
+later case). Some usual C-style backslash sequences are allowed. Lines
+beginning with "#" character are treated as comments.
+
+Last but not least, all the defined surrogates should be listed in file named
+"index.ini". This file has following format: >
+
+    [surrogates]
+    Name1=file1,file2...
+    Name2=file3,file4...
+    ...
+
+First line should contain literal string "[surrogates]". All the rest lines
+should have form <name>=<filelist>, where <name> is name of surrogate as will
+be listed in menu or accepted as argument of ":SurrogateSetCurrent" command,
+and <filelist> is comma-separated list of surrogates definition files (see
+above). All files in list are concatenated to form a surrogate.
+
+Where to place all this files? A new directory named "data" should be created
+somewhere in you Vim runtime hierarchy. All surrogate definition files
+("*.srg", "*.spc" and "*.rpl") together with "index.ini" file should be put in
+this directory. If you have installed this plugin from |vimball|, this files
+and directory have been already created for you.
+
+As a very special feature, if you are running Vim under Windows and have
+UniRed editor installed, this plugin will detect it and import all its
+surrogates definitions. This is supplied to facilitate migration from UniRed
+to Vim.
+
+==============================================================================
+5. Known Bugs                                          *surrogates-known-bugs*
+
+Plugin doesn't work unless encoding is set to utf-8. It would be nice if at
+least latin1 was supported, but it isn't... 
+
+==============================================================================
+6. License                                                *surrogates-license*
+
+This plugin is placed in public domain. It has been written by Cyril Slobin.
+In fact his real name is "Кирилл Злобин", the former form is just an English
+transcription. Unfortunately, he currently have no reliable email address.
+However you can try to drop a note to <slobin@ice.ru>, and if constellations
+appear in right configuration, he maybe (only maybe!) will read it.
+
+Files i18n.srg, x.srg and zam.srg have been taken from UniRed distribution,
+which claims to be GPLed. Files tex.rpl and tex.spc have been taken from
+catdoc distribution, which claims to be GPLed also. 
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl
